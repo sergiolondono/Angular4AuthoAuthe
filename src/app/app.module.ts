@@ -1,5 +1,5 @@
 import { AuthGuard } from './services/auth-guard.service';
-import { AuthHttp, AUTH_PROVIDERS, provideAuth, AuthConfig } from 'angular2-jwt/angular2-jwt';
+import { AuthHttp, AUTH_PROVIDERS, provideAuth, AuthConfig, AuthModule } from 'angular2-jwt/angular2-jwt';
 import { OrderService } from './services/order.service';
 import { MockBackend } from '@angular/http/testing';
 import { fakeBackendProvider } from './helpers/fake-backend';
@@ -17,6 +17,7 @@ import { SignupComponent } from './signup/signup.component';
 import { AdminComponent } from './admin/admin.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { NoAccessComponent } from './no-access/no-access.component';
+import { AdminAuthGuard } from 'app/services/admin-auth-guard.service';
 
 @NgModule({
   declarations: [
@@ -32,12 +33,14 @@ import { NoAccessComponent } from './no-access/no-access.component';
     BrowserModule,
     FormsModule,
     HttpModule,
+    AuthModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent },
       { 
         path: 'admin', 
         component: AdminComponent, 
-        canActivate: [AuthGuard] },
+        canActivate: [AuthGuard, AdminAuthGuard] 
+      },
       { path: 'login', component: LoginComponent },
       { path: 'no-access', component: NoAccessComponent }
     ])
@@ -47,7 +50,8 @@ import { NoAccessComponent } from './no-access/no-access.component';
 
     AuthService,
     AuthGuard,
-
+    AdminAuthGuard,
+    AUTH_PROVIDERS,
     // For creating a mock back-end. You don't need these in a real app. 
     fakeBackendProvider,
     MockBackend,
